@@ -1,0 +1,25 @@
+name: CosmoSunriseServerP
+main: popkechupki\CosmoSunriseServerP
+version: 0.7.8
+api: 2.0.0
+load: POSTWORLD
+author: popkechupki
+description: "CosmoSunriseServer's plugin."
+commands:
+ food:
+  description: "調理した牛肉が１０個手に入ります。100CSです。"
+ world:
+  description: "ワールドを移動します。"
+ info:
+  description: "ワールド情報をはじめ各種情報を確認できます。"
+ sethome:
+  description: "テレポート先を設定できます。"
+ home:
+  description: "設定した座標にテレポートします。"
+ delhome:
+  description: "設定している座標を削除します。"
+ notice:
+  description: "通知のコマンド"
+ owner: 
+  description: "オーナー専用コマンド"
+  permission: op
