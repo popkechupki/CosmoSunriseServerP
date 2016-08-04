@@ -7,7 +7,7 @@ Cosmo Sunrise Server's System.
 Development start date: 2016/06/29
 Last up date: 2016/07/15
 
-このプラグインはpopke LISENCEを理解および同意した上で使用する事。
+このプラグインはCosmoSunriseServerでのみ使用可能なものとする。
 また、無駄なコードはことごとく排除するよう書く事を心がける事。
 */
 
