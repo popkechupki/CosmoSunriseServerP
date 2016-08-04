@@ -1,0 +1,2 @@
+# CosmoSunriseServerP
+イベント関連をはじめとする様々な要素を追加
