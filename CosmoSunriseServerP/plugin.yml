@@ -1,6 +1,6 @@
 name: CosmoSunriseServerP
-main: popkechupki\CosmoSunriseServerP
-version: 0.7.8
+main: CoSSeSystem\CosmoSunriseServerP
+version: 0.8
 api: 2.0.0
 load: POSTWORLD
 author: popkechupki
