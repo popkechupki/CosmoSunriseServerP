@@ -179,13 +179,9 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
                             case '2':
                                 $sender->sendMessage("[§aCoSSe§f]"."\n"."-現在時間-"."\n"."§b".$time."\n"."-所持金-"."\n".TF::GOLD.$PMY."cs"."\n"."-通知-"."\n"."§e".$n);
                                 break;
-
-                            case '3':
-                                $sender->sendMessage("[§aCoSSe§f]"."\n"."-ほしリスト-"."\n"."§e☆§f: サーバー管理者"."\n"."§c☆§f: サーバー副管理者"."\n"."§b☆§f: サーバー警察"."\n"."§a☆§f: プラグイン製作・提供者"."\n"."§9☆§f: CoSSeのプレイヤー印");
-                                break;
                             }
                         }else{
-                            $sender->sendMessage("[§aCoSSe§f]"."\n"."/info <ページナンバー>"."\n"."-infoコマンドのページナンバー-"."\n"."1: ワールド情報"."\n"."2: 時間、所持金"."\n"."3: 名前の星確認");
+                            $sender->sendMessage("[§aCoSSe§f]"."\n"."/info <ページナンバー>"."\n"."-infoコマンドのページナンバー-"."\n"."1: ワールド情報"."\n"."2: 時間、所持金");
                         }
                     }
     			break;
