@@ -5,7 +5,6 @@ namespace CoSSeSystem;
 /*
 Cosmo Sunrise Server's System.
 Development start date: 2016/06/29
-Last up date: 2016/08/16
 
 このプラグインはpopke LISENCEを理解および同意した上で使用する事。
 また、無駄なコードはことごとく排除するよう書く事を心がける事。
@@ -29,35 +28,17 @@ use pocketmine\level\Position;
 //another
 use pocketmine\item\Item;
 use pocketmine\entity\DroppedItem;
-use pocketmine\inventory\BigShapedRecipe;
 
 class CosmoSunriseServerP extends PluginBase implements Listener{
 
     private $serverInstance;
 
 	public function onEnable(){
+        $this->getServer()->getPluginManager()->registerEvents($this,$this);
         $this->getLogger()->info(TF::GREEN."CosmoSunriseServerP is Enabled!");
-
+        #private
         $this->serverInstance  = Server::getInstance();
         $server = $this->getServer();
-        #craftitem
-        $server->getCraftingManager()->registerRecipe(((new BigShapedRecipe(Item::get(98, 0, 4),
-            "N N",
-            "   ",
-            "N N"
-        ))->setIngredient("N", Item::get(1, 0, 2))));
-        $server->getCraftingManager()->registerRecipe(((new BigShapedRecipe(Item::get(109, 0, 4),
-            "N  ",
-            "NN ",
-            "NNN"
-        ))->setIngredient("N", Item::get(98, 0, 1))));
-        $server->getCraftingManager()->registerRecipe(((new BigShapedRecipe(Item::get(44, 5, 6),
-            "N  ",
-            "   ",
-            "   "
-        ))->setIngredient("N", Item::get(98, 0, 1))));
-        $this->getServer()->getPluginManager()->registerEvents($this,$this);
-        
         #config
         if (!file_exists($this->getDataFolder())) @mkdir($this->getDataFolder(), 0740, true);
         $this->BTH = new Config($this->getDataFolder() . "BackToHome.yml", Config::YAML);
@@ -94,57 +75,21 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
 		#dafault
 		$player = $event->getPlayer();
 		$user = $player->getName();
-		#JoinTip
-		$event->setJoinMessage("");
-		$this->getServer()->broadcasttip($user."§a§oさんが参加しました。§r");
+        $ps = count($this->getServer()->getOnlinePlayers());
 		#JoinMessage
+        $event->setJoinMessage("[§aJoin§f]".$user." joined the game. ({$ps}/10)");
 		$player->sendMessage("§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r"."\n"."§aCosmoSunriseServerへようこそ！"."\n"."HP(mcpecosse.webcrow.jp)でルールは確認しましたか？"."\n"."このサーバーは開拓生活・経済サーバーです。"."\n"."詳しい登録方法はHP「サーバーへの参加方法」をご覧ください。"."\n"."§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r");
         #Notice
         if($this->NOTICE->exists($user)){
             $player->sendMessage("[§aNotice from CoSSe§f]"."\n"."あなた宛に通知が来ています。確認は「/notice read」");
         }
-		#setStar
-		switch ($user) {
-			case 'popkechupki':
-            	$player->setDisplayName("§9☆§e☆§a☆§f>".$user);
-				break;
-			
-			case 'SASAMISAN':
-				$player->setDisplayName("§9☆§c☆§f>".$user);
-				break;
-
-			case 'Splendente':
-                $player->setDisplayName("§9☆§c☆§f>".$user);
-				break;
-
-			case 'Hayato8810':
-				$player->setDisplayName("§9☆§b☆§f>".$user);
-				break;
-
-			case 'masasi650':
-				$player->setDisplayName("§9☆§b☆§f>".$user);
-				break;
-
-			case 'keldeer':
-				$player->setDisplayName("§9☆§b☆§f>".$user);
-				break;
-
-			case 'famimaS':
-				$player->setDisplayName("§9☆§a☆§f>".$user);
-				break;
-
-            default:
-                $player->setDisplayName("§9☆§f>".$user);
-                break;
-		}
-		$player->save();
 	}
 
 	function onPlayerQuit(PlayerQuitEvent $event){
 		$user = $event->getPlayer()->getName();
-		#QuitTip
-		$event->setQuitMessage("");
-		$this->getServer()->broadcasttip($user."§a§oさんが退出しました。§r");
+        $ps = count($this->getServer()->getOnlinePlayers());
+		#QuitMessage
+        $event->setQuitMessage("[§6Quit§f]".$user." left the game. ({$ps}/10)");
 	}
 
 	function PlayerDeath(PlayerDeathEvent $event){
@@ -157,21 +102,18 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
         $itemD = $event->getBlock()->getDamage();
         switch ($event->getBlock()->getId()) {
             
-            case '52':
-                $id_helmet = $player->getInventory()->getHelmet()->getId();
-                $id_chestplate = $player->getInventory()->getChestplate()->getId();
-                $id_leggins = $player->getInventory()->getLeggings()->getId();
-                $id_boots = $player->getInventory()->getBoots()->getId();
+            case Item::MONSTER_SPAWNER:
+                $arm = array($player->getInventory()->getHelmet()->getId(), $player->getInventory()->getChestplate()->getId(), $player->getInventory()->getLeggings()->getId(), $player->getInventory()->getBoots()->getId());
                 $player->getInventory()->clearAll();
                 $player->sendMessage("[§aCoSSe§f]"."\n"."§cインベントリ内のアイテムを消去しました。");
-                $player->getInventory()->setArmorItem(0, Item::get($id_helmet, 0, 1));
-                $player->getInventory()->setArmorItem(1, Item::get($id_chestplate, 0, 1));
-                $player->getInventory()->setArmorItem(2, Item::get($id_leggins, 0, 1));
-                $player->getInventory()->setArmorItem(3, Item::get($id_boots, 0, 1));
+                $player->getInventory()->setArmorItem(0, Item::get($arm[0], 0, 1));
+                $player->getInventory()->setArmorItem(1, Item::get($arm[1], 0, 1));
+                $player->getInventory()->setArmorItem(2, Item::get($arm[2], 0, 1));
+                $player->getInventory()->setArmorItem(3, Item::get($arm[3], 0, 1));
                 $player->getInventory()->sendArmorContents($player);
                 break;
             
-            case '35':
+            case Item::WOOL:
                 $BANK = $this->BCS->getBCSAccount($user);
                 $PMY = $this->CMA->getMoney($user);
                 if ($itemD == 1) {//オレンジ
