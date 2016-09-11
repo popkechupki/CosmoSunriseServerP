@@ -33,6 +33,10 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
 
     private $serverInstance;
 
+    const MESSAGE_TITLE = "[".TF::GREEN."CoSSe".TF::WHITE."]"."\n";
+    const NOTICE_MESSAGE_TITLE = "[".TF::GREEN."Notice from CoSSe".TF::WHITE."]"."\n";
+    const BANK_MESSAGE_TITLE = "[".TF::BLUE."BankofCoSSe".TF::WHITE."]"."\n";
+
 	public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this,$this);
         $this->getLogger()->info(TF::GREEN."CosmoSunriseServerP is Enabled!");
@@ -81,13 +85,14 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
 		$player->sendMessage("§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r"."\n"."§aCosmoSunriseServerへようこそ！"."\n"."HP(mcpecosse.webcrow.jp)でルールは確認しましたか？"."\n"."このサーバーは開拓生活・経済サーバーです。"."\n"."詳しい登録方法はHP「サーバーへの参加方法」をご覧ください。"."\n"."§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r");
         #Notice
         if($this->NOTICE->exists($user)){
-            $player->sendMessage("[§aNotice from CoSSe§f]"."\n"."あなた宛に通知が来ています。確認は「/notice read」");
+            $player->sendMessage(self::NOTICE_MESSAGE_TITLE."あなた宛に通知が来ています。確認は「/notice read」");
         }
 	}
 
 	function onPlayerQuit(PlayerQuitEvent $event){
 		$user = $event->getPlayer()->getName();
-        $ps = count($this->getServer()->getOnlinePlayers());
+        $p = count($this->getServer()->getOnlinePlayers());
+        $ps = $p - 1;
 		#QuitMessage
         $event->setQuitMessage("[§6Quit§f]".$user." left the game. ({$ps}/10)");
 	}
@@ -105,7 +110,7 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
             case Item::MONSTER_SPAWNER:
                 $arm = array($player->getInventory()->getHelmet()->getId(), $player->getInventory()->getChestplate()->getId(), $player->getInventory()->getLeggings()->getId(), $player->getInventory()->getBoots()->getId());
                 $player->getInventory()->clearAll();
-                $player->sendMessage("[§aCoSSe§f]"."\n"."§cインベントリ内のアイテムを消去しました。");
+                $player->sendMessage(self::MESSAGE_TITLE."§cインベントリ内のアイテムを消去しました。");
                 $player->getInventory()->setArmorItem(0, Item::get($arm[0], 0, 1));
                 $player->getInventory()->setArmorItem(1, Item::get($arm[1], 0, 1));
                 $player->getInventory()->setArmorItem(2, Item::get($arm[2], 0, 1));
@@ -118,22 +123,22 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
                 $PMY = $this->CMA->getMoney($user);
                 if ($itemD == 1) {//オレンジ
                     
-                    $player->sendMessage("[§9Bank of CoSSe§f]"."\n"."-あなたの所持金一覧-"."\n"."§cPocketMoney§f: §c{$PMY}cs"."\n"."§bBank of CoSSe§f: §b{$BANK}cs");
+                    $player->sendMessage(self::BANK_MESSAGE_TITLE."-あなたの所持金一覧-"."\n"."§cYourMoney§f: §c{$PMY}cs"."\n"."§bBank of CoSSe§f: §b{$BANK}cs");
                 } elseif($itemD == 2) {//赤紫
                     if($BANK >= 250) {
                         $this->BCS->addBCSAccount($user, -250);
                         $this->CMA->addMoney($user, + 250);
-                        $player->sendMessage("[§9Bank of CoSSe§f]"."\n"."あなたの口座から250cs引き出しました。");
+                        $player->sendMessage(self::BANK_MESSAGE_TITLE."あなたの口座から250cs引き出しました。");
                     } else {
-                        $player->sendMessage("[§9Bank of CoSSe§f]"."\n"."あなたの口座の残金が足りません。");
+                        $player->sendMessage(self::BANK_MESSAGE_TITLE."あなたの口座の残金が足りません。");
                     }
                 } elseif($itemD == 3) {//空色
                     if($PMY >= 250) {
                         $this->BCS->addBCSAccount($user, +250);
                         $this->CMA->addMoney($user, -250);
-                        $player->sendMessage("[§9Bank of CoSSe§f]"."\n"."あなたの口座に250cs入金しました。");
+                        $player->sendMessage(self::BANK_MESSAGE_TITLE."あなたの口座に250cs入金しました。");
                     } else {
-                        $player->sendMessage("[§9Bank of CoSSe§f]"."\n"."あなたの手持ちのお金が足りません。");
+                        $player->sendMessage(self::BANK_MESSAGE_TITLE."あなたの手持ちのお金が足りません。");
                     }
                 }
                 break;
@@ -143,7 +148,7 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
 
     function onCommand(CommandSender $sender, Command $command, $label, array $args){
         #デフォ
-        if (!$sender instanceof Player) return $this->getServer()->broadcastMessage("[§aCoSSe§f]"."\n"."§bサーバのメンテナンスを行います。再開までしばらくお待ちください。");
+        if (!$sender instanceof Player) return $this->getServer()->broadcastMessage(self::MESSAGE_TITLE."§bサーバのメンテナンスを行います。再開までしばらくお待ちください。");
             $player = $sender->getPlayer();
     	    $user = $player->getName();
         #プライーベート
@@ -173,26 +178,26 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
     				if(isset($args[0])){
                         switch ($args[0]) {
                             case '1':
-                                $sender->sendMessage("[§aCoSSe§f]"."\n"."-あなたの座標情報-"."\n"."§cX§f: §c{$x}"."\n"."§bY§f: §b{$y}"."\n"."§aZ§f: §a{$z}"."\n"."§eworld§f: §e".$level."\n"."§d備考§f:"."\n"." -生活ワールド: §dy50以下の採掘を制限しています。"."\n"." -資源ワールド: §d{$day}にリセットされます。");
+                                $sender->sendMessage(self::MESSAGE_TITLE."-あなたの座標情報-"."\n"."§cX§f: §c{$x}"."\n"."§bY§f: §b{$y}"."\n"."§aZ§f: §a{$z}"."\n"."§eworld§f: §e".$level."\n"."§d備考§f:"."\n"." -生活ワールド: §dy50以下の採掘を制限しています。"."\n"." -資源ワールド: §d{$day}にリセットされます。");
                                 break;
 
                             case '2':
-                                $sender->sendMessage("[§aCoSSe§f]"."\n"."-現在時間-"."\n"."§b".$time."\n"."-所持金-"."\n".TF::GOLD.$PMY."cs"."\n"."-通知-"."\n"."§e".$n);
+                                $sender->sendMessage(self::MESSAGE_TITLE."-現在時間-"."\n"."§b".$time."\n"."-所持金-"."\n".TF::GOLD.$PMY."cs"."\n"."-通知-"."\n"."§e".$n);
                                 break;
                             }
                         }else{
-                            $sender->sendMessage("[§aCoSSe§f]"."\n"."/info <ページナンバー>"."\n"."-infoコマンドのページナンバー-"."\n"."1: ワールド情報"."\n"."2: 時間、所持金");
+                            $sender->sendMessage(self::MESSAGE_TITLE."/info <ページナンバー>"."\n"."-infoコマンドのページナンバー-"."\n"."1: ワールド情報"."\n"."2: 時間、所持金");
                         }
                     }
     			break;
 
     		case 'owner':
     			if (!isset($args[0])) {
-    				$sender->sendMessage("0: help, 1: backup, 2: update, 3: itemclear, 4:notice");
+    				$sender->sendMessage("0: help, 1: backup, 2: update, 3: itemclear, 4: notice");
     			}elseif($args[0] == 1){
-    				$this->getServer()->broadcastMessage("[§aCoSSe§f]"."\n"."§bVPSのバックアップを行います。再開までしばらくお待ちください。");
+    				$this->getServer()->broadcastMessage(self::MESSAGE_TITLE."§bVPSのバックアップを行います。再開までしばらくお待ちください。");
     			}elseif($args[0] == 2){
-    				$this->getServer()->broadcastMessage("[§aCoSSe§f]"."\n"."§b要素追加またはバグ修正を行います。再開までしばらくお待ちください。");
+    				$this->getServer()->broadcastMessage(self::MESSAGE_TITLE."§b要素追加またはバグ修正を行います。再開までしばらくお待ちください。");
     			}elseif($args[0] == 3){
                     /*$entity = $sender;
     			    foreach($this->getServer()->$this->getServer()->getLevelByName($level)->getEntities() as $entity){
@@ -206,35 +211,35 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
     			}elseif($args[0] == 4){
                     $this->NOTICE->set($args[1], $args[2]);
                     $this->NOTICE->save();
-                    $sender->sendMessage("[§aNotice from CoSSe§f]"."\n"."通知を送信しました。");
+                    $sender->sendMessage(self::NOTICE_MESSAGE_TITLE."通知を送信しました。");
                 }
     			break;
 
     		case 'food':
     			if($PMY < 100){
-    				$sender->sendMessage("[§aCoSSe§f]"."\n"."§bお金がたりません...");
+    				$sender->sendMessage(self::MESSAGE_TITLE."§bお金がたりません...");
     			}else{
     				$item = Item::get(364, 0, 10);
     				$player->getInventory()->addItem($item);
     				$this->CMA->addMoney($user, -100);
-    				$sender->sendMessage("[§aCoSSe§f]"."\n"."調理したステーキを10個販売しました。");
+    				$sender->sendMessage(self::MESSAGE_TITLE."調理したステーキを10個販売しました。");
     			}
     			break;
 
     		case 'world':
                 if($level == $source){
                     $sender->teleport(new Position($this->SETTING->get($live)[0], $this->SETTING->get($live)[1], $this->SETTING->get($live)[2], $this->getServer()->getLevelByName($live)));
-                    $sender->sendMessage("[§aCoSSe§f]"."\n"."§b生活ワールドにワープしました！");
+                    $sender->sendMessage(self::MESSAGE_TITLE."§b生活ワールドにワープしました！");
                 }elseif($level == $live){
                     $sender->teleport(new Position($this->SETTING->get($source)[0], $this->SETTING->get($source)[1], $this->SETTING->get($source)[2], $this->getServer()->getLevelByName($source)));
-                    $sender->sendMessage("[§aCoSSe§f]"."\n"."§b資源ワールドにワープしました！");
+                    $sender->sendMessage(self::MESSAGE_TITLE."§b資源ワールドにワープしました！");
                 }
                 break;
 
             case 'sethome':
                 $this->BTH->set($user, array($x, $y, $z, $level));
                 $this->BTH->save();
-                $sender->sendMessage("[§aCoSSe§f]"."\n"."あなたのテレポート先を登録しました。 /homeで戻れます。");
+                $sender->sendMessage(self::MESSAGE_TITLE."あなたのテレポート先を登録しました。 /homeで戻れます。");
                 break;
 
             case 'home':
@@ -245,9 +250,9 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
                     $level = $this->BTH->get($user)[3];
                     $pos = new Position($x, $y, $z, $this->getServer()->getLevelByName($level));
                     $sender->teleport($pos);
-                    $sender->sendMessage("[§aCoSSe§f]"."\n"."設定された座標にテレポートしました。");
+                    $sender->sendMessage(self::MESSAGE_TITLE."設定された座標にテレポートしました。");
                 }else{
-                    $sender->sendMessage("[§aCoSSe§f]"."\n"."あなたのテレポート先の座標が設定されていません。 /sethomeで設定してください。");
+                    $sender->sendMessage(self::MESSAGE_TITLE."あなたのテレポート先の座標が設定されていません。 /sethomeで設定してください。");
                 }
                 break;
 
@@ -255,27 +260,27 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
                 if($this->BTH->exists($user)){
                     $this->BTH->remove($user);
                     $this->BTH->save();
-                    $sender->sendMessage("[§aCoSSe§f]"."\n"."あなたのテレポート先の座標を削除しました。");
+                    $sender->sendMessage(self::MESSAGE_TITLE."あなたのテレポート先の座標を削除しました。");
                 }else{
-                    $sender->sendMessage("[§aCoSSe§f]"."\n"."あなたのテレポート先は設定されていません。 /sethomeで設定してください。");
+                    $sender->sendMessage(self::MESSAGE_TITLE."あなたのテレポート先は設定されていません。 /sethomeで設定してください。");
                 }
                 break;
 
             case 'notice':
                 if (!isset($args[0])) {
-                    $sender->sendMessage("[§aNotice from CoSSe§f]"."\n"."/notice <read | del>");
+                    $sender->sendMessage(self::NOTICE_MESSAGE_TITLE."/notice <read | del>");
                 }else{
                     if($args[0] == "read"){
                         if($this->NOTICE->exists($user)){
                             $message = $this->NOTICE->get($user);
-                            $sender->sendMessage("[§aNotice from CoSSe§f]"."\n"."通知: ".$message."\n"."これを確認した後「/bank n del」で通知を消去することをお勧めします。"); 
+                            $sender->sendMessage(self::NOTICE_MESSAGE_TITLE."§6通知:§f ".$message."\n"."これを確認した後「/notice del」で通知を消去することをお勧めします。"); 
                         }else{
-                            $sender->sendMessage("[§aNotice from CoSSe§f]"."\n"."あなたには通知が来ていません。");
+                            $sender->sendMessage(self::NOTICE_MESSAGE_TITLE."あなたには通知が来ていません。");
                         }
                     }elseif($args[0] == "del"){
                         $this->NOTICE->remove($user);
                         $this->NOTICE->save();
-                        $sender->sendMessage("[§aNotice from CoSSe§f]"."\n"."通知を消去しました。");
+                        $sender->sendMessage(self::NOTICE_MESSAGE_TITLE."通知を消去しました。");
                     }
                 }
                 break;
@@ -290,7 +295,7 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
         if($event->getBlock()->y <= 50 and $level == $live){
             if(!$this->SETTING->exists($user)){
                 $event->setCancelled();
-                $player->sendMessage("[§aCoSSe§f]"."\n"."§bY50以下のため採掘ができません。詳細は「/info 1」");
+                $player->sendMessage(self::MESSAGE_TITLE."§bY50以下のため採掘ができません。詳細は「/info 1」");
             }
         }else{
             switch ($event->getBlock()->getId()) {
