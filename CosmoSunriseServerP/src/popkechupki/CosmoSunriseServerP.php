@@ -82,7 +82,7 @@ class CosmoSunriseServerP extends PluginBase implements Listener{
         $ps = count($this->getServer()->getOnlinePlayers());
 		#JoinMessage
         $event->setJoinMessage("[§aJoin§f]".$user." joined the game. ({$ps}/10)");
-		$player->sendMessage("§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r"."\n"."§aCosmoSunriseServerへようこそ！"."\n"."HP(mcpecosse.webcrow.jp)でルールは確認しましたか？"."\n"."このサーバーは開拓生活・経済サーバーです。"."\n"."詳しい登録方法はHP「サーバーへの参加方法」をご覧ください。"."\n"."§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r");
+		$player->sendMessage("§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r"."\n".TF::GREEN."Welcome to Comorevi.net！"."\n"."HP(info.comorevi.net)でルールは確認しましたか？"."\n"."このサーバーは開拓生活・経済サーバーです。"."\n"."詳しい登録方法はHP「サーバーへの参加方法」をご覧ください。"."\n"."§7x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x§r");
         #Notice
         if($this->NOTICE->exists($user)){
             $player->sendMessage(self::NOTICE_MESSAGE_TITLE."あなた宛に通知が来ています。確認は「/notice read」");
